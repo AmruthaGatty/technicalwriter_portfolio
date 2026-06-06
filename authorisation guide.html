@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>API Overview &amp; Auth Guide</title>
+  <style>
+    /*<![CDATA[*/
+    @import url('https://fonts.googleapis.com/css?family=Roboto+Condensed%3A300%2C400%2C700%7CRoboto%3A300%2C400%2C500%2C700&ver=5.4.1');
+    /*]]>*/
+  </style>
+  <meta name="template" content="../../assets/masterpages/book.htt" />
+</head>
+<body class="tnr-content" style="max-width:1400px">
+  <p><button onclick="
+myFunction1
+()">Last modified on</button></p>
+  <p><span id="lastUpdated"></span></p>
+  <script>
+    function
+    myFunction1() {
+      //<![CDATA[
+      const date = new Date(document.lastModified);
+      const options = {
+        year: 'numeric',
+        month: 'long',
+        day: '2-digit',
+        timeZone: 'UTC'
+      };
+      const formattedDate = date.toLocaleDateString('en-US', options);
+      document.getElementById("lastUpdated").textContent = alert(formattedDate);
+    }
+    //]]>
+  </script>
+  <div class="tnr-bar tnr-black pf-topnav-opta"><a class="tnr-bar-item tnr-button-pf tnr-right tnr-hide-large tnr-hide-medium" href="javascript:void(0)" onclick="tnr_open()" style="font-size:15px;"><i class="fa fa-bars tnr-padding-right tnr-padding-left"></i> </a></div>
+  <section class="tnr-container" style="max-width:1390px">
+    <div class="main-content-sidenav single-tech_docs" id="main-content-article-sidenav">
+      <h1> Feeds API Overview and Authorisation Guide</h1>
+      <p class="lead-l">Our API gives external applications access to our content and data.</p>
+      <hr class="hrsmall" />
+      <p>The  Feeds API gives developers and external applications a way to access the Sports Data database. However, it also provides access to data feeds for subscribers of our other products, such as Editorial (Articles, Blogs, Commentaries) and <span class="ttip" title="Video-on-Demand">VOD</span> assets stored in the  CMS, and Live Streams.<br />
+        Before you dive into our guides, read our overview - you will learn the basics of how our APIs work and key concepts to get started.</p>
+      <h3>Overview</h3>
+      <p> Feeds is <a href="#restful-api">RESTful</a> and based on HTTP methods. Data feeds provide access in response to HTTP <code>GET</code> requests from outlets and end-users. All requests are subject to <a href="#security-information">authentication</a>, including requests from outlets that have been added to our <a href="../glossary.htm#allowlist" target="_blank">allow list</a> or access the API via custom domains. The following example request URLs show a standard GET request and are suitable for our standard authentication methods. However, it is possible to make requests to some Sports in our SDAPI using OAuth - currently our Soccer API, Basketball API, and Cricket API. For more information about the available options and how to make OAuth requests, see: <a href="#security-information">Security Information: Authentication, Keys, B2B/B2C Mode, Allowed outlets</a> and <a href="#oauth-requests">How to make requests using OAuth</a>.</p>
+      <h5>Easily discover rich content and fixture data</h5>
+      <p>Among our feeds, we also offer access to our Master Fixture List (MFL) and Master Content Catalogue (MCC). The MFL offers a schedule of both upcoming and previous sports events and rich metadata about each fixture, including the date/time, competition, contestants and location. You can search for, retrieve, and exclude content by linked MFL metadata UUIDs, including Articles, Videos and Fixture schedules - this is because MFL metadata and content are linked across  Feeds.</p>
+      <p>Our Editorial Service gives you access to content stored in the  CMS, such as Articles and Images, and any other article types covered by your subscription, such as Live Text Commentaries, Slidelists, and Blogs. Video subscribers can choose from several delivery methods, including  Feeds VOD API, FTP Push/Pull, CMS Download, Aspera, and Amazon S3 Syndication. Your Outlet Authentication Key normally gives you access to the endpoints that match your subscription package - including access to the MFL and MCC feeds.</p>
+      <span class="anchor" id="additional-resources"></span>
+      <h5>Example additional resources</h5>
+      <table class="table">
+        <caption>*Subject to subscription. Access is not included with a standard Article feed/Editorial subscription. Other services also available. Contact your Account Manager for details.</caption>
+        <thead>
+          <tr>
+            <th>API resource</th>
+            <th>Task/Usage</th>
+            <th>Endpoint</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="light-grey"><strong>Sports Data</strong></span></td>
+            <td>GET assets from your subscribed feed for a Sport in the SDAPI*</td>
+            <td><code>/{feedResource}/{feedName}/{outletAuthKey}?{queryParameters}</code></td>
+          </tr>
+          <tr>
+            <td><span class="light-grey"><strong>/mfl</strong></span></td>
+            <td>GET an individual MFL Fixture entity</td>
+            <td><code>/mfl/{outletAuthKey}/fixture/{assetUuid}?{queryParameters}</code></td>
+          </tr>
+          <tr>
+            <td><span class="light-grey"><strong>/mcc</strong></span></td>
+            <td>GET/Search a list of MCC entities</td>
+            <td><code>/mcc/{outletAuthKey}?{queryParameters}</code></td>
+          </tr>
+          <tr>
+            <td><span class="light-grey"><strong>/article</strong></span></td>
+            <td>GET/Search for Editorial articles*</td>
+            <td><code>/article/{outletAuthKey}?{queryParameters}</code></td>
+          </tr>
+          <tr>
+            <td><span class="light-grey"><strong>/blog</strong></span></td>
+            <td>GET an individual Blog article by UUID*</td>
+            <td><code>/blog/{outletAuthKey}/{assetUuid}?{queryParameters}</code></td>
+          </tr>
+          <tr>
+            <td><span class="light-grey"><strong>/ltc</strong></span></td>
+            <td>GET an individual Live Text Commentary article by asset UUID:<br />
+              by Article UUID or MFL Fixture entity UUID*</td>
+            <td><code>/ltc/{outletAuthKey}/{assetUuid}?{queryParameters}</code></td>
+          </tr>
+          <tr>
+            <td><span class="light-grey"><strong>/vod</strong></span></td>
+            <td>GET/Search a list of Videos*</td>
+            <td><code>/vod/{outletAuthKey}?{queryParameters}</code></td>
+          </tr>
+        </tbody>
+      </table>
+      <span class="anchor" id="restful-api"></span>
+      <h4>RESTful API</h4>
+      <p>Each API is based on <a href="#rest">REST</a> principles: you can access data via standard GET requests over HTTP or HTTPS in UTF-8 format to an API endpoint to return data in your specified format, and add query parameters to search and control the results in the feed. The API only returns assets accessible to an outlet, qualified by any query criteria specified in the request. Most feeds support XML and JSON at a minimum. The main difference is the presence or absence of support for JSON, RSS, RSS 2.0, or MRSS. We will provide details of the supported formats and technical specification in the user and integration guides for each feed.</p>
+      <p>As our APIs use RESTful URLs, you can use whichever programming language you are comfortable with to implement your company&#39;s solution.</p>
+      <p>An authentication key is issued to each outlet which grants access to any data feeds and assets that an outlet is subscribed to. An organisation may have more than one outlet, so you must supply the unique outlet authentication key with each request.</p>
+      <span class="anchor" id="rest"></span>
+      <h5>REST</h5>
+      <p>REST defines a set of architectural principles by which you can design Web services that focus on the resources of a system, including how resource states are addressed and transferred over HTTP by a wide range of clients written in different languages.</p>
+      <span class="anchor" id="base-url"></span>
+      <h3>Base URL</h3>
+      <p>The default base address of the API is: <code>http://api.domain.com</code></p>
+      <div class="pf-box-info">
+        <ul>
+          <li><strong>Base domain:</strong> You should use the standard base domain to access our Sports Data API service, unless we have advised you otherwise or if your IP address or domain is in China.</li>
+          <li><strong>Chinese domains or IP addresses:</strong> If your IP address or domain is in China, you should replace the base domain with the following: <code style="background-color:#fafafa!important;border:1px solid #999!important">api.domain-hosted.com.cn</code> (effective from 9 September 2020)</li>
+        </ul>
+      </div>
+      <span class="anchor" id="language-utf8"></span>
+      <h3>Language</h3>
+      <p>Our API is language-agnostic which means you can use any programming language to implement your company&#39;s solution. You can use any HTTP client in any programming language or your web browser to interact with the API.</p>
+      <span class="anchor" id="utf8"></span>
+      <h3>UTF-8 Encoding</h3>
+      <p>The API requires that data is UTF-8 encoded.</p>
+      <span class="anchor" id="url-structure"></span>
+      <h3>URL Structure</h3>
+      <p>All examples in our guidance are provided using the REST format and URL requests broadly use the following structure. For a list of query parameters, see the API Endpoint Reference and Query Parameters Index for the feed.</p>
+      <pre>GET {protocol}://{requestDomain}/{assetType}/{outletAuthKey}?_rt={mode}&amp;_fmt={dataFormat}&amp;{queryParameters}</pre>
+      <pre>GET {protocol}://{requestDomain}/{assetType}/{outletAuthKey}/{assetId}?_rt={mode}&amp;_fmt={dataFormat}&amp;{queryParameters}</pre>
+      <div class="pf-box-note"><strong>Making successful requests:</strong> In our guides, we use HTTPS syntax for our example <code>GET</code> requests (rather than cURL, for example). All URLs are case-sensitive - this means that URL strings must contain the correct case and operators. You MUST format your requests correctly and include certain information, as follows - otherwise, an error will be returned.
+        <ul>
+          <li>Include the following information in the URL or header and make sure it is correct for your outlet: your unique and valid <code>{outletAuthKey}</code> this must be after the Outlet Authentication Key (and endpoint, if applicable). for <code>_rt={mode}</code> (operating mode) and <code>_fmt={dataFormat}</code> (response format). If the feed/call requires it, it should also include an entity UUID (such as an article UUID or fixture/match UUID).</li>
+          <li>Begin the query parameter string with <code>?</code> (question mark) - this must be after the Outlet Authentication Key (and endpoint, if applicable). To build up a query string, make sure that each query parameter is separated by the <code>&amp;</code> (ampersand) operator. Values must be separated by the correct operator, for example <code>&amp;</code> (multiple values, &#39;AND&#39;), or - if a parameter supports it - <code>,</code> (multiple values, &#39;OR&#39;) or <code>!</code> (&#39;NOT&#39;).</li>
+          <li>Use the required <code>_</code> (underscore) for any parameters listed with this prefix.</li>
+          <li>Remove any placeholder value curly braces <code>{}</code> from your calls (we include these as an example only).</li>
+          <li>If using the JSONP format (<code>_fmt=jsonp</code>) you MUST use it in combination with the callback parameter (<code>_clbk</code>) and a fixed value (or where you use a different value in a different instance, you must do this as little as possible). Be aware that common JavaScript frameworks, such as jQuery, can default to use randomly-generated function names - you must make sure that these are overridden and define a fixed function name instead.</li>
+          <li><strong>OAuth:</strong> The format of these request URLs is different when using OAuth because the request must contain the authN token. See: <a href="#oauth-requests">How to make requests using OAuth</a></li>
+        </ul>
+      </div>
+      <table class="tableqpvalue">
+        <thead>
+          <tr>
+            <th>Element</th>
+            <th>Name</th>
+            <th>Definition</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>{protocol}</code></td>
+            <td>Protocol</td>
+            <td><code>http</code> is the default request type; <code>https</code> is also available. If it is not enabled by default for your outlet, contact your Account Manager for information.</td>
+          </tr>
+          <tr>
+            <td><code>{requestDomain}</code></td>
+            <td>Request domain/base URL</td>
+            <td>Base URL to access the  Feeds API. For most clients, this is the default: <code>http://api.domain.com</code><br />
+              Use the default unless a custom domain has been supplied by your Account Manager.</td>
+          </tr>
+          <tr>
+            <td><code>{assetType}</code></td>
+            <td>Feed/Resource/Asset Type</td>
+            <td>Feed or API resource for the asset type. In the case of the Sports Data API, this will be the sport that you are subscribed to. For example, for the Soccer API this is <code>soccerdata</code> - ensure this is correct for your sport.<br />
+              If you are also subscribed to our other data feeds, those calls must be directed to the correct resource (for example, <code>article</code> and <code>vod</code>). All Sports or other  Feeds subscribers have access to the <code>mfl</code> and <code>mcc</code> feeds which provide fixture and general metadata about fixtures, tournament calendars, competitions, contestants, sports, and more.</td>
+          </tr>
+          <tr>
+            <td><code>{outletAuthKey}</code></td>
+            <td>Outlet Authorisation Key</td>
+            <td>Value: Outlet Authorisation Key - one is attributed to each outlet. It is a unique 26-character alphanumeric UUID which is included in the path of the access URL supplied upon activation. Requests made without a valid authorisation key will be rejected.</td>
+          </tr>
+          <tr>
+            <td><code>{queryParameters}</code></td>
+            <td>Query parameters</td>
+            <td>Optional but essential to search the feed, and control the returned content, formatting, and page size. Some use an underscore as a prefix (<code>_</code>), but some do not. In the case of the Article service it is possible to fetch a specific article, rather than a list, by adding the unique ID (UUID) associated with it in the  CMS. See <a href="#query-parameters">Query parameters</a></td>
+          </tr>
+          <tr>
+            <td><code>_rt={mode}</code></td>
+            <td>Operating mode/request type (query parameter)</td>
+            <td>Declares the required operating mode (request type) in the URL. Depending on the feed/endpoint, possible values are <code>c</code> (B2C) or <code>b</code> (B2B). If no parameter is supplied the default setting of B2C mode (<code>c</code>) will be used. The value specified must be appropriate for the outlet making the request, as provided in the supplied account activation information. See <a href="#operatingmode">Verifying the operating mode</a>.</td>
+          </tr>
+          <tr>
+            <td><code>_fmt={dataFormat}</code></td>
+            <td>Format (query parameter)</td>
+            <td><em>Optional</em> but important in order to declare the response data format in the URL, such as <code>xml</code> and <code>json</code>.<br />
+              <code>{dataFormat}</code> values: check the supported response format for each API endpoint in the user guide. See <a href="#response-format-errors">Response format</a>.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br />
+      <span class="anchor" id="query-parameters"></span>
+      <h3>Query Parameters</h3>
+      <p>Query parameters are used to either adjust the information requested from the API or to change the format or quantity of the data returned.</p>
+      <p>There are two types of parameter:</p>
+      <ul>
+        <li><strong>Format parameters</strong> begin with an underscore (<code>_</code>), and control <strong>how information is displayed</strong> once it has been returned from the API, with regards to number returned, pagination, format, and order.</li>
+        <li><strong>Search criteria parameters</strong> do not begin with an underscore and adjust the information requested to be returned from the API (for example, <code>id</code>).</li>
+      </ul>
+      <p>For a list of all valid query parameters and values, examples and more information, see the API Endpoint Reference and Query Parameters Index for each feed.</p>
+      <div class="pf-box-caution"><strong>Important:</strong> All URIs are case-sensitive, and must contain valid query parameters, values and operators. The request URL must include valid format and authentication information. Otherwise, an error may be returned.</div>
+      <span class="anchor" id="response-format-errors"></span>
+      <h3>Response Format</h3>
+      <p>Check the supported response format for each API endpoint in the user guide. The specification is not always the same but XML and JSON are broadly supported.</p>
+      <p>To specify the response format, do so in the URL by passing the <code>_fmt</code> query parameter and the value of the format you require. For a list of accepted formats, take a look at our API Tutorial to learn the basics of how the API works and the key concepts to get started.</p>
+      <p><strong>Response codes and errors</strong></p>
+      <p>An HTTP response code of <code>200</code> (OK) is returned for all requests that are successfully understood and processed. On error, the response body contains an error code. Errors are returned using standard HTTP error code syntax. For the JSONP format, the HTTP status code is <code>200</code> (OK). When an error occurs, the specific  Feeds error code is returned in the response body, along with a unique error token. See <a href="#response-status-errors">Response status and error codes</a>.</p>
+      <div class="pf-box-caution"><strong>Caution:</strong> If an invalid response format is requested then the HTTP status code <code>415</code> and  Feeds error code <code>10210</code> (Unsupported format) is returned.  Feeds error code <code>10501</code> indicates an error of &quot;Unsupported media format&quot;.</div>
+      <div class="pf-box-note"><strong>Note - using JSONP:</strong> Where an endpoint supports <code>jsonp</code>, the value that is passed to the <code>_clbk</code> parameter (the callback function name) must be a fixed value (or where you use a different value in a different instance, you must do this as little as possible). Be aware that common JavaScript frameworks, such as jQuery, can default to use randomly-generated function names - you must make sure that these are overridden and define a fixed function name instead.</div>
+      <br />
+      <span class="anchor" id="pagination"></span>
+      <h3>Pagination</h3>
+      <p>All results are returned in pages and requests that return an array of items are automatically paginated. The <code>_pgSz</code> parameter specifies the size of the page requested by the user - if it is not supplied, the default setting for the outlet is used. The <code>_pgNm</code> parameter specifies the page number to be returned (indexed from <code>1</code>). If it is not supplied, then page 1 is returned by default.</p>
+      <h5>Setting the page size and number</h5>
+      <p>The default size and maximum size is determined by the operating mode or outlet type, for example B2B (<code>b</code>) or B2C (<code>c</code>); if the operating mode (<code>_rt</code>) is not specified, then the behaviour will be that of a B2C request.</p>
+      <ul>
+        <li><strong>B2B requests</strong> are subject to page size of 50 by a default, up to a maximum of 1000.</li>
+        <li><strong>B2C requests</strong> are subject to a page size of 20 by default, up to a maximum of 50.</li>
+      </ul>
+      <p>You can use query parameters to specify the page size (<code>_pgSz</code>) and page number (<code>_pgNm</code>). For example, the below B2C request to the Articles API is for 50 results (from the default 20):</p>
+      <pre>GET api.domain.com/article/{outletAuthKey}?_rt=c&amp;_fmt=xml&amp;pgNm=1&amp;_pgSz=50</pre>
+      <div class="pf-box-note"><strong>Note:</strong> An HTTP error (<code>4xx</code>) is returned if the request exceeds the permitted maximum or is made for a page that does not exist.</div>
+      <span class="anchor" id="asset-availability"></span>
+      <h3>Asset Availability And Subscription Type</h3>
+      <p>Access to assets is determined by subscription type and start date. We offer a choice of packages that provide different types of services, or assets, such as articles, video and live streams, for a wide range of sports and competitions in different countries.</p>
+      <p>Many outlets choose to take some but not all of the packages available. Only assets accessible to the requesting outlet will be returned, qualified by any criteria specified in the request. By default, an outlet has access only to content published after the activation date.</p>
+      <span class="anchor" id="time-date-sorting"></span>
+      <h3>Time And Date Format (Timestamps)</h3>
+      <p>Timestamps in responses are returned in UTC (GMT) and are format-dependent. For JSON, timestamps are in milliseconds since the epoch (midnight 01 January 1970 GMT). For XML, timestamps are returned in UTC (GMT) with a zero offset (<code>YYYY-MM-DDThh:mm:ssZ</code>).</p>
+      <p>Example: <code>2015-06-01T00:00:00Z</code> would represent 01 June 2015 00:00:00 GMT.</p>
+      <p>You can use query parameters to search for assets or to return date and time information about an asset.</p>
+      <h4>Sort Order And Filtering By Date And Time</h4>
+      <p>By default, results are in ascending order according to the created date, but you can use the <code>_ord</code> and <code>_ordSrt</code> query parameters to change the sort order based on a date (ascending or descending) or by another attribute, such as a field mask specifier name.</p>
+      <p>The <code>_fld</code> (field mask specifier) query parameter is common to most  Feeds APIs and can be used to expose field mask name values.</p>
+      <h4>Dates Covered</h4>
+      <p>As soon as we have confirmed your organisation is ready to  Feeds, you can access all assets published since that time onwards. Feeds may not contain content published before this time, but you can poll the feed in case content is updated (for example, if a tournament calendar record is updated after it was first published).</p>
+      <span class="anchor" id="security-information"></span>
+      <h3>Security Information: Authentication, Keys, B2B/B2C Mode, Allowed Outlets</h3>
+      <p>Authentication is required for every request made to the  Feeds API. Several forms of security are used to verify that an outlet has permission to access the feed and requested data:</p>
+      <ul>
+        <li><strong>Outlet Authorisation Key (outletAuthKey)</strong> - you must include a unique Outlet Authorisation Key (<code>outletAuthKey</code>) in the URI. It identifies an outlet and allows it to retrieve content from  Feeds. One organisation may have several outlets, so it is important to use the key attributed to the outlet that will request assets.</li>
+        <li><strong>B2B/B2C operating mode</strong> - you must specify the correct operating mode.</li>
+        <li><strong>allowing outlets by referrer domain (B2C)</strong> - the header must include a valid referer domain that has been previously supplied to us.</li>
+        <li><strong>allowing outlets by IP address/range (B2B)</strong> - the request must come from a recognised IP address and B2B client. For each B2B client, we maintain a list of authorised IP addresses/ranges. For a request to be accepted, it must come from a recognised IP address/range.</li>
+        <li><strong>OAuth authentication</strong> - the Authorization header must contain <code>Authorization: Bearer {authN token}</code> - the <code>{authN}</code> token is from the OAuth endpoint response, returned following your request to our OAuth API. This is only available for some sports and some clients, on an opt-in basis, and not by default. For more information, see: <a href="#oauth-requests">How to make requests using OAuth</a></li>
+      </ul>
+      <p>The authorisation process starts when you send a request to the  Feeds API - the reason a request is sent may vary but it is normally to request an asset, such as an article or image, or to access metadata related to an asset.</p>
+      <p>If you are receiving an error when trying to access assets that should be available to you, verify that all required security information has been provided and is correct. Check that the request URL contains query parameters that are in the correct case, and specify a valid value and page size. Contact us if the error remains.</p>
+      <div class="pf-box-note"><strong>Note:</strong> Anti-caching is in use.</div>
+      <span class="anchor" id="outlet-auth-key"></span>
+      <h4>Outlet Authorisation Key (outletAuthKey)</h4>
+      <p>The Outlet Authorisation Key is an alphanumerical string used to identify specific outlets, and allows content for the outlet&#39;s CMS to be retrieved by  Feeds. One organisation may receive content from many outlets, so it is important to make sure you are using the correct key for the outlet from which you are making requests and accessing the feed to retrieve assets.</p>
+      <span class="anchor" id="b2b-b2c-whitelisting"></span> <span class="anchor" id="operatingmode"></span>
+      <h4>B2B/B2C: Verifying The Operating Mode</h4>
+      <p>There are two operating modes, B2B and B2C, and the requests are handled differently. The mode that your outlet(s) will use is agreed during the account setup process - this must match the referrer type mode you use in your requests.</p>
+      <p>You must declare the correct request type for your outlet, by passing the query parameter <code>_rt</code> and correct value in the request URL. Note that  Feeds does not support the Accept header method. Valid values are <code>c</code> (B2C) or <code>b</code> (B2B). If no parameter is supplied the default setting of B2C mode will be used.</p>
+      <p><strong>B2B</strong> is a Business-to-Business request (used by partners requesting assets from their back-end servers, for example). The end-user requests and traffic (page impressions) on your website/mobile app concern your data centre and not our data centre.</p>
+      <ul>
+        <li>There is a limitation for the number of hits per hour for a B2B feed. We do not anticipate that you will exceed this. If you exceed it, the feed will return an HTTP <code>503</code> error (<code>200</code> for JSONP), with  Feeds error code <code>10320</code> in the body. Contact your Account Manager if you regularly receive this error.</li>
+        <li>Access is restricted by IP address (must be added to our <a href="../glossary.htm#allowlist" target="_blank">list of allowed IP addresses</a>). However, sports data assets are not geotargetted.</li>
+      </ul>
+      <p><strong>B2C</strong> is a Business-to Customer-request (used by end-users, as with smartphone apps, for example). These user requests and traffic (page impressions) directly concern our data centre.</p>
+      <ul>
+        <li>Because we expect that we will receive a higher volume of requests from a B2C feed compared with a B2B feed, it is most suitable - we work with B2C subscribers to ensure that the fair use policy for rate hits is suitable for their anticipated volume of traffic.</li>
+        <li>Access is restricted by the specified referrer type. However, sports data assets are noy geotargetted to the location of the requesting end-user.</li>
+      </ul>
+      <p>B2C requests are subject to a per-outlet referrer header &#39;allowed list&#39; check.</p>
+      <p>The table below summarises the differences. We supply the mode and other key information to you when your account and access is confirmed.<br />
+        For more information, see <a href="#security-information">Security Information: Authentication, Keys, B2B/B2C Mode, Allowed outlets</a> (API Overview and Authorisation Guide).</p>
+      <table class="table-resp-flds-stripe thl1" style="width:50%">
+        <caption class="small-cap">*Information about fair use restrictions is available from your Account Manager.</caption>
+        <thead>
+          <tr>
+            <th style="text-align:center">Feature</th>
+            <th style="text-align:center">B2B</th>
+            <th style="text-align:center">B2C</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>IP address <a href="../glossary.htm#allowlist" target="_blank">&#39;allowed list&#39;</a> restricted</td>
+            <td style="text-align:center">Yes</td>
+            <td style="text-align:center">No</td>
+          </tr>
+          <tr>
+            <td>Referer header <a href="../glossary.htm#allowlist" target="_blank">&#39;allowed list&#39;</a> restricted</td>
+            <td style="text-align:center">No</td>
+            <td style="text-align:center">Yes</td>
+          </tr>
+          <tr>
+            <td>Subject to fair use check*</td>
+            <td style="text-align:center">Yes</td>
+            <td style="text-align:center">No</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="pf-box-warning"><strong>Important:</strong> If you fail to specify the correct <code>_rt</code> value (referrer type/operating mode) the feed may return an error. For each B2B client, we maintain a list of authorised IP addresses/ranges. For a request to be accepted, it must come from a recognised IP address/range. All B2B and B2C requests must supply the correct <code>_rt</code> mode and <code>{outletAuthKey}</code> in order to access the service and operate correctly.</div>
+      <br />
+      <span class="anchor" id="ip-whitelisting"></span>
+      <h4>IP Address lists (Allowed/Authorised Outlets)</h4>
+      <p>For each B2B client, we maintain a list of authorised IP addresses/ranges. For a requests to be accepted, it must come from a recognised IP address/range, and provide the correct B2B <code>_rt</code> mode and appropriate outlet information.</p>
+      <span class="anchor" id="oauth-requests"></span>
+      <h4 id="oauth">How To Make Requests Using OAuth</h4>
+      <p>For some clients and some sports, we can offer OAuth authentication as an alternative to using lists of allowed IP addressed or domains, if neither of these methods are suitable for your use case. For example, if you use dynamic IP addresses and will request assets from back-end servers.</p>
+      <p>For clients who have had OAuth authentication enabled by us, you can view a tutorial in our <a href="faqs.htm" target="_blank">FAQs</a> section - see: <a href="faqs.htm#faqs-how-can-i-make-requests-using-oauth" target="_blank">How can I make requests using OAuth?</a></p>
+      <div class="pf-box-info">This is offered on an optional &#39;opt-in&#39; basis (not by default). Contact your Account Manager for more information on availability (including sports coverage in the SDAPI) or to request this for your organisation.</div>
+      <span class="anchor" id="geolocation"></span>
+      <h4>Geo-Location</h4>
+      <p>Some Feeds deliver geo-restricted assets. The request header is used to determine the originator. If  Feeds cannot determine that the originator has permission to access a geo-restricted asset, an error will be returned (HTTP <code>403</code>, error code <code>101xx</code> or <code>103xx</code>).</p>
+      <p>If you are receiving an error when trying to access assets that should be available to you, first verify that <a href="#security-information">all required security information</a> has been provided and is correct in the header and request. Contact us if the error remains.</p>
+      <h4>Acceptable Use Check</h4>
+      <p>You will receive an HTTP <strong>429</strong> error (<strong>10320</strong>) if you make a high number of requests within a short period of time. If you receive an error, wait a while before making a new request - contact us if the error remains.</p>
+      <span class="anchor" id="response-status-errors"></span>
+      <h3>Response Status And Error Codes</h3>
+      <p>An HTTP response code of <code>200</code> (OK) is returned for all requests that are successfully understood and processed. On error, the response body contains an error code. Errors are returned using standard HTTP error code syntax.</p>
+      <p>However, for the JSONP format the HTTP status code is always <code>200</code> (OK). When an error occurs, the specific  Feeds error code is returned in the response body, and a unique error token.</p>
+      <p>You can expect to receive the following types of messages:</p>
+      <ul>
+        <li>Success - you made a successful request to the API</li>
+        <li>Request Errors - the information you provided is incorrect</li>
+        <li>Authentication Error - problems confirming your identity</li>
+      </ul>
+      <div class="pf-box-caution">If you need to contact us about an error, make a note of the unique error token that you have received and provide it when you report the issue.</div>
+      <p>Below is an example of an authentication error when a valid Outlet Authorisation Key is not supplied. The HTTP status code is <code>404</code> (or <code>200</code> for JSONP) and the error code is <code>10010</code> in the response body.</p>
+      <p><strong>XML:</strong></p>
+      <pre class="prettyprint lang-xml">&lt;errorCode xmlns=&quot;http://Domain name/schema/soccerdata&quot; token=&quot;1h24ecfv0f0cg56a0d3j9soa5&quot;&gt;10010&lt;/errorCode&gt;
+</pre>
+      <p><strong>JSONP</strong></p>
+      <pre class="prettyprint lang-json">{&quot;errorCode&quot;:&quot;10010&quot;,&quot;token&quot;:&quot;3ywv2ze3u4uh9v8l9sb6rrki7&quot;}
+</pre>
+      <p>If you receive an error, we recommend referring to our response and error code index for a full explanation and guidance.</p>
+      <p>Here is a summary of the codes you might see and the general reasons:</p>
+      <table class="tableqpvalueexample">
+        <thead>
+          <tr>
+            <th>Error type</th>
+            <th>Reason</th>
+            <th>HTTP status code</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>n/a (OK)</td>
+            <td>Success - you made a successful request to the API.</td>
+            <td><code>200</code></td>
+          </tr>
+          <tr>
+            <td>Request or authentication error</td>
+            <td>The information you provided is incorrect, or the data requested does not exist, or there are problems confirming your identity. In general, <code>400</code>/<code>4xx</code> errors can be related to your integration so we recommend that you check that you have specified the correct settings for the access URL, operating mode type (B2B or B2C) and domains/IP addresses (for allow lists).</td>
+            <td><code>400</code>/<code>4xx</code></td>
+          </tr>
+          <tr>
+            <td>Feed or unexpected error</td>
+            <td>We hope you do not see this error, but it means that the feed is currently unavailable or unable to handle the request. You can choose to resend the request again, but contact us if the error remains.</td>
+            <td><code>500</code></td>
+          </tr>
+          <tr>
+            <td>Acceptable use error</td>
+            <td>You have made a high number of requests within a short period of time. If you receive an error, wait a while before making a new request but contact us if the error remains.</td>
+            <td><code>503</code></td>
+          </tr>
+          <tr>
+            <td>Unknown request parameter</td>
+            <td>You have supplied a parameter that is not defined in the API. Check the parameter in the feed&#39;s API Endpoint Reference and Query Parameters Index.</td>
+            <td><code>562</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+</body>
+</html>
