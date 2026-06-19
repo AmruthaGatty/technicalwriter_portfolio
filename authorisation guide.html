@@ -14,25 +14,7 @@
   <meta name="template" content="../../assets/masterpages/book.htt" />
 </head>
 <body class="tnr-content" style="max-width:1400px">
-  <p><button onclick="
-myFunction1
-()">Last modified on</button></p>
-  <p><span id="lastUpdated"></span></p>
-  <script>
-    function
-    myFunction1() {
-      //<![CDATA[
-      const date = new Date(document.lastModified);
-      const options = {
-        year: 'numeric',
-        month: 'long',
-        day: '2-digit',
-        timeZone: 'UTC'
-      };
-      const formattedDate = date.toLocaleDateString('en-US', options);
-      document.getElementById("lastUpdated").textContent = alert(formattedDate);
-    }
-    //]]>
+  
   </script>
   <div class="tnr-bar tnr-black pf-topnav-opta"><a class="tnr-bar-item tnr-button-pf tnr-right tnr-hide-large tnr-hide-medium" href="javascript:void(0)" onclick="tnr_open()" style="font-size:15px;"><i class="fa fa-bars tnr-padding-right tnr-padding-left"></i> </a></div>
   <section class="tnr-container" style="max-width:1390px">
