@@ -1,355 +1,172 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Getting Started with the Claude API | Amrutha Gatty</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Getting Started with the Claude API</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #0f1117;
-      --surface: #181c27;
-      --surface-2: #1e2333;
-      --border: #2a2f45;
-      --accent: #7c6af7;
-      --accent-soft: rgba(124, 106, 247, 0.12);
-      --accent-glow: rgba(124, 106, 247, 0.25);
-      --green: #3ecf8e;
-      --green-soft: rgba(62, 207, 142, 0.1);
-      --yellow: #f5c542;
-      --red: #f26d6d;
-      --text-primary: #e8eaf0;
-      --text-secondary: #8b90a7;
-      --text-muted: #565c78;
-      --code-bg: #0d1020;
-    }
+    /* General CSS - no external font dependencies */
 
     body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text-primary);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 15px;
       line-height: 1.7;
-      font-size: 16px;
+      color: #333;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 30px 40px 60px;
     }
 
-    /* ── TOP NAV ── */
-    nav {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(15, 17, 23, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      padding: 0 2rem;
-      display: flex; align-items: center; justify-content: space-between;
-      height: 56px;
-    }
-    .nav-brand { font-size: 0.85rem; color: var(--text-secondary); }
-    .nav-brand span { color: var(--accent); font-weight: 600; }
-    .nav-tag {
-      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em;
-      text-transform: uppercase; color: var(--green);
-      background: var(--green-soft);
-      border: 1px solid rgba(62, 207, 142, 0.25);
-      padding: 3px 10px; border-radius: 20px;
-    }
-
-    /* ── LAYOUT ── */
-    .page {
-      max-width: 760px; margin: 0 auto;
-      padding: 3.5rem 2rem 6rem;
-    }
-
-    /* ── HERO ── */
-    .hero-eyebrow {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--accent);
-      margin-bottom: 1.25rem;
-    }
-    .hero-eyebrow::before {
-      content: ''; display: block;
-      width: 20px; height: 1px; background: var(--accent);
-    }
     h1 {
-      font-size: clamp(1.75rem, 4vw, 2.6rem);
-      font-weight: 700; line-height: 1.2;
-      color: var(--text-primary);
-      margin-bottom: 1.25rem;
-      letter-spacing: -0.02em;
+      font-size: 24px;
+      font-weight: bold;
+      color: #111;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
     }
-    h1 em { font-style: normal; color: var(--accent); }
-    .hero-meta {
-      display: flex; align-items: center; gap: 1.5rem;
-      font-size: 0.82rem; color: var(--text-muted);
-      padding-bottom: 2rem;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 2.5rem;
-      flex-wrap: wrap;
-    }
-    .hero-meta span { display: flex; align-items: center; gap: 5px; }
-
-    /* ── BODY TYPOGRAPHY ── */
-    p { margin-bottom: 1.4rem; color: var(--text-primary); }
 
     h2 {
-      font-size: 1.3rem; font-weight: 700;
-      color: var(--text-primary);
-      margin: 2.75rem 0 1rem;
-      padding-left: 0.9rem;
-      border-left: 3px solid var(--accent);
-      letter-spacing: -0.01em;
+      font-size: 17px;
+      font-weight: bold;
+      color: #222;
+      margin-top: 32px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 4px;
     }
+
     h3 {
-      font-size: 1rem; font-weight: 600;
-      color: var(--text-primary);
-      margin: 2rem 0 0.6rem;
+      font-size: 15px;
+      font-weight: bold;
+      color: #333;
+      margin-top: 20px;
+      margin-bottom: 6px;
     }
 
-    /* ── PREREQ / CALLOUT BOXES ── */
-    .callout {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--accent);
-      border-radius: 8px;
-      padding: 1rem 1.25rem;
-      margin: 1.75rem 0;
-      font-size: 0.9rem;
+    p {
+      margin: 0 0 12px;
     }
-    .callout.info { border-left-color: var(--accent); }
-    .callout.warning { border-left-color: var(--yellow); }
-    .callout.tip { border-left-color: var(--green); }
-    .callout-label {
-      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
-      text-transform: uppercase; margin-bottom: 0.4rem;
-    }
-    .callout.info .callout-label { color: var(--accent); }
-    .callout.warning .callout-label { color: var(--yellow); }
-    .callout.tip .callout-label { color: var(--green); }
-    .callout p { margin-bottom: 0; color: var(--text-secondary); font-size: 0.88rem; }
-    .callout ul { color: var(--text-secondary); font-size: 0.88rem; padding-left: 1.2rem; }
-    .callout li { margin-bottom: 0.3rem; }
 
-    /* ── CODE BLOCKS ── */
-    .code-block {
-      background: var(--code-bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      margin: 1.5rem 0;
-      overflow: hidden;
+    ul, ol {
+      margin: 6px 0 14px 0;
+      padding-left: 22px;
     }
-    .code-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0.6rem 1rem;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-    }
-    .code-lang {
-      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em;
-      text-transform: uppercase; color: var(--text-muted);
-    }
-    .copy-btn {
-      font-size: 0.7rem; font-weight: 600; color: var(--text-muted);
-      background: none; border: 1px solid var(--border);
-      border-radius: 4px; padding: 2px 8px; cursor: pointer;
-      font-family: inherit; transition: color 0.2s, border-color 0.2s;
-    }
-    .copy-btn:hover { color: var(--accent); border-color: var(--accent); }
-    pre {
-      padding: 1.25rem 1.25rem;
-      overflow-x: auto;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.82rem;
-      line-height: 1.65;
-      color: #c9d1e9;
-    }
-    .kw  { color: #a78bfa; }
-    .str { color: #86efac; }
-    .cm  { color: #4b5472; font-style: italic; }
-    .fn  { color: #67e8f9; }
-    .num { color: #fb923c; }
-    .key { color: #93c5fd; }
 
-    /* ── INLINE CODE ── */
+    li {
+      margin-bottom: 4px;
+    }
+
     code {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.82em;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      padding: 2px 6px; border-radius: 4px;
-      color: #c4b5fd;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px;
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      padding: 1px 5px;
     }
 
-    /* ── STEP INDICATOR ── */
-    .step {
-      display: flex; gap: 1rem;
-      margin: 2.5rem 0;
-    }
-    .step-num {
-      flex-shrink: 0;
-      width: 32px; height: 32px;
-      background: var(--accent-soft);
-      border: 1px solid var(--accent);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.78rem; font-weight: 700; color: var(--accent);
-      margin-top: 2px;
-    }
-    .step-body { flex: 1; }
-    .step-body h3 { margin-top: 0; }
-
-    /* ── RESPONSE BLOCK ── */
-    .response-block {
-      background: var(--green-soft);
-      border: 1px solid rgba(62, 207, 142, 0.2);
-      border-radius: 10px;
-      padding: 1.25rem;
-      margin: 1.5rem 0;
-    }
-    .response-label {
-      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--green);
-      margin-bottom: 0.6rem;
-    }
-    .response-block pre {
-      padding: 0; background: none;
-      color: #d1fae5; font-size: 0.82rem;
+    pre {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px;
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      padding: 12px 14px;
+      overflow-x: auto;
+      line-height: 1.55;
+      margin: 10px 0 16px;
     }
 
-    /* ── TABLE ── */
     table {
-      width: 100%; border-collapse: collapse;
-      font-size: 0.875rem; margin: 1.5rem 0;
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 14px;
+      margin: 12px 0 20px;
     }
+
     th {
-      text-align: left; padding: 0.6rem 1rem;
-      background: var(--surface);
-      color: var(--text-secondary);
-      font-size: 0.72rem; font-weight: 700;
-      letter-spacing: 0.06em; text-transform: uppercase;
-      border-bottom: 1px solid var(--border);
+      background: #f0f0f0;
+      font-weight: bold;
+      text-align: left;
+      padding: 7px 10px;
+      border: 1px solid #ccc;
     }
+
     td {
-      padding: 0.7rem 1rem;
-      border-bottom: 1px solid var(--border);
-      color: var(--text-primary);
+      padding: 6px 10px;
+      border: 1px solid #ddd;
       vertical-align: top;
     }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: var(--surface); }
 
-    /* ── NEXT STEPS ── */
-    .next-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 1rem; margin: 1.5rem 0;
+    tr:nth-child(even) td {
+      background: #fafafa;
     }
-    .next-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1.1rem 1.25rem;
-      transition: border-color 0.2s;
-    }
-    .next-card:hover { border-color: var(--accent); }
-    .next-card-icon { font-size: 1.4rem; margin-bottom: 0.5rem; }
-    .next-card h4 { font-size: 0.88rem; font-weight: 600; margin-bottom: 0.3rem; }
-    .next-card p { font-size: 0.8rem; color: var(--text-muted); margin: 0; }
 
-    /* ── AUTHOR FOOTER ── */
-    .author-footer {
-      margin-top: 4rem; padding-top: 2rem;
-      border-top: 1px solid var(--border);
-      display: flex; align-items: center; gap: 1.25rem;
+    .note {
+      background: #fffbe6;
+      border-left: 4px solid #e6a817;
+      padding: 8px 12px;
+      margin: 14px 0;
+      font-size: 14px;
     }
-    .author-avatar {
-      width: 48px; height: 48px; border-radius: 50%;
-      background: var(--accent-soft);
-      border: 2px solid var(--accent);
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 700; color: var(--accent); font-size: 1rem;
-      flex-shrink: 0;
-    }
-    .author-name { font-weight: 600; font-size: 0.9rem; }
-    .author-bio { font-size: 0.8rem; color: var(--text-muted); }
 
-    /* ── TOC SIDEBAR (sticky) ── */
-    @media (min-width: 1100px) {
-      body { display: grid; grid-template-columns: 1fr 220px; }
-      nav { grid-column: 1 / -1; }
-      .page { max-width: 760px; margin: 0 auto; }
-      .toc-sidebar {
-        position: sticky; top: 72px;
-        height: fit-content;
-        padding: 2rem 1.5rem 2rem 0;
-        font-size: 0.78rem;
-        color: var(--text-muted);
-      }
-      .toc-sidebar h5 {
-        font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em;
-        text-transform: uppercase; color: var(--text-muted);
-        margin-bottom: 0.75rem;
-      }
-      .toc-sidebar a {
-        display: block; color: var(--text-muted);
-        text-decoration: none; padding: 4px 0;
-        border-left: 2px solid transparent;
-        padding-left: 10px;
-        transition: color 0.15s, border-color 0.15s;
-        line-height: 1.4;
-      }
-      .toc-sidebar a:hover { color: var(--accent); border-left-color: var(--accent); }
+    .tip {
+      background: #f0fdf4;
+      border-left: 4px solid #4caf50;
+      padding: 8px 12px;
+      margin: 14px 0;
+      font-size: 14px;
     }
-    @media (max-width: 1099px) { .toc-sidebar { display: none; } }
 
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    ul, ol { padding-left: 1.5rem; margin-bottom: 1.4rem; }
-    li { margin-bottom: 0.4rem; color: var(--text-primary); }
+    .info {
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      padding: 8px 12px;
+      margin: 14px 0;
+      font-size: 14px;
+    }
+
+    .label {
+      font-weight: bold;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    .note  .label { color: #b45309; }
+    .tip   .label { color: #15803d; }
+    .info  .label { color: #1d4ed8; }
+
+    .meta {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 24px;
+    }
+
+    a { color: #1d4ed8; }
+
+    hr {
+      border: none;
+      border-top: 1px solid #ddd;
+      margin: 30px 0;
+    }
   </style>
 </head>
 <body>
 
-<nav>
-  <span class="nav-brand">Portfolio · <span>Amrutha Gatty</span></span>
-  <span class="nav-tag">Writing Sample</span>
-</nav>
+  <h1>Getting Started with the Claude API</h1>
+  <p class="meta">Amrutha Gatty &nbsp;|&nbsp; June 2026 &nbsp;|&nbsp; Tutorial &nbsp;|&nbsp; REST API · LLM · Python</p>
 
-<aside class="toc-sidebar">
-  <h5>On this page</h5>
-  <a href="#overview">Overview</a>
-  <a href="#prerequisites">Prerequisites</a>
-  <a href="#concepts">Key Concepts</a>
-  <a href="#step1">Step 1 — Get your API key</a>
-  <a href="#step2">Step 2 — Install the SDK</a>
-  <a href="#step3">Step 3 — First API call</a>
-  <a href="#step4">Step 4 — Understand the response</a>
-  <a href="#step5">Step 5 — Secure your key</a>
-  <a href="#parameters">Key parameters</a>
-  <a href="#errors">Error handling</a>
-  <a href="#next">Next steps</a>
-</aside>
-
-<main class="page">
-
-  <div class="hero-eyebrow">API Documentation · Tutorial</div>
-  <h1>Getting Started with the <em>Claude API</em></h1>
-  <div class="hero-meta">
-    <span>✍ Amrutha Gatty</span>
-    <span>📅 June 2026</span>
-    <span>⏱ 10 min read</span>
-    <span>🏷 REST API · LLM · Python</span>
-  </div>
-
-  <h2 id="overview">Overview</h2>
+  <h2>Overview</h2>
   <p>The Claude API gives you programmatic access to Anthropic's Claude language models. Whether you're building a customer support chatbot, a document summarizer, or a code review assistant, the API lets you send natural-language prompts to Claude and receive structured responses — all over standard HTTP.</p>
   <p>This guide walks you through authenticating with the API, making your first request, and understanding the response. By the end, you'll have a working Python script that sends a message to Claude and prints the reply.</p>
 
-  <div class="callout info">
-    <div class="callout-label">Who this guide is for</div>
+  <div class="info">
+    <p class="label">Who this guide is for</p>
     <p>Developers who are new to the Claude API and want to make their first API call. Basic familiarity with Python and REST APIs is assumed.</p>
   </div>
 
-  <h2 id="prerequisites">Prerequisites</h2>
+  <h2>Prerequisites</h2>
   <ul>
     <li>An <a href="https://console.anthropic.com" target="_blank">Anthropic Console</a> account (free to create)</li>
     <li>A funded API account — a minimum credit load of $5 is required before calling the API</li>
@@ -357,161 +174,85 @@
     <li><code>pip</code> for installing the Anthropic SDK</li>
   </ul>
 
-  <h2 id="concepts">Key Concepts</h2>
-  <p>Before writing code, it helps to understand three foundational ideas:</p>
-
+  <h2>Key Concepts</h2>
+  <p>Before writing code, it helps to understand a few foundational terms:</p>
   <table>
     <thead>
       <tr><th>Concept</th><th>What it means</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td><strong>Messages</strong></td>
-        <td>The core API primitive. You send a list of messages (user/assistant turns) and receive Claude's reply.</td>
-      </tr>
-      <tr>
-        <td><strong>Model</strong></td>
-        <td>Which Claude variant to call. Use <code>claude-sonnet-4-6</code> for a balance of speed and capability.</td>
-      </tr>
-      <tr>
-        <td><strong>Tokens</strong></td>
-        <td>The unit Claude uses internally. Roughly 1 token ≈ ¾ of an English word. You pay per input + output token.</td>
-      </tr>
-      <tr>
-        <td><strong>max_tokens</strong></td>
-        <td>A hard cap on how many tokens Claude can generate in its reply.</td>
-      </tr>
-      <tr>
-        <td><strong>API key</strong></td>
-        <td>A secret credential you pass on every request to authenticate your calls.</td>
-      </tr>
+      <tr><td><strong>Messages</strong></td><td>The core API primitive. You send a list of messages (user/assistant turns) and receive Claude's reply.</td></tr>
+      <tr><td><strong>Model</strong></td><td>Which Claude variant to call. Use <code>claude-sonnet-4-6</code> for a balance of speed and capability.</td></tr>
+      <tr><td><strong>Tokens</strong></td><td>The unit Claude uses internally. Roughly 1 token ≈ ¾ of an English word. You pay per input + output token.</td></tr>
+      <tr><td><strong>max_tokens</strong></td><td>A hard cap on how many tokens Claude can generate in its reply.</td></tr>
+      <tr><td><strong>API key</strong></td><td>A secret credential you pass on every request to authenticate your calls.</td></tr>
     </tbody>
   </table>
 
-  <h2 id="step1">Step 1 — Generate an API key</h2>
+  <h2>Step 1 — Generate an API Key</h2>
+  <p>Log in to the <a href="https://console.anthropic.com" target="_blank">Anthropic Console</a> and navigate to <strong>Settings → API Keys</strong>. Click <strong>Create Key</strong>, give it a descriptive name (for example, <code>dev-local</code>), and copy the value immediately — it will not be shown again.</p>
 
-  <div class="step">
-    <div class="step-num">1</div>
-    <div class="step-body">
-      <h3>Create your key in the Console</h3>
-      <p>Log in to the <a href="https://console.anthropic.com" target="_blank">Anthropic Console</a> and navigate to <strong>Settings → API Keys</strong>. Click <strong>Create Key</strong>, give it a descriptive name (e.g., <code>dev-local</code>), and copy the value immediately — it will not be shown again.</p>
-      <div class="callout warning">
-        <div class="callout-label">Important</div>
-        <p>API keys have no expiration date but carry full account access. Never commit a key to source control or share it publicly. If you suspect a key has been exposed, revoke it immediately from the Console.</p>
-      </div>
-    </div>
+  <div class="note">
+    <p class="label">Important</p>
+    <p>API keys have no expiration date but carry full account access. Never commit a key to source control or share it publicly. If you suspect a key has been exposed, revoke it immediately from the Console.</p>
   </div>
 
-  <h2 id="step2">Step 2 — Install the Anthropic SDK</h2>
+  <h2>Step 2 — Install the Anthropic SDK</h2>
+  <p>The official Python SDK wraps the REST API with typed request and response objects, automatic retries, and built-in streaming support. Install it with:</p>
+  <pre>pip install anthropic</pre>
+  <p>Verify the installation:</p>
+  <pre>python -c "import anthropic; print(anthropic.__version__)"</pre>
 
-  <div class="step">
-    <div class="step-num">2</div>
-    <div class="step-body">
-      <p>The official Python SDK wraps the REST API with typed request and response objects, automatic retries, and built-in streaming support. Install it with:</p>
+  <h2>Step 3 — Make Your First API Call</h2>
+  <p>Store your API key as an environment variable so it stays out of your source code:</p>
+  <pre># macOS / Linux
+export ANTHROPIC_API_KEY="sk-ant-api..."
 
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">bash</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-        <pre>pip install anthropic</pre>
-      </div>
+# Windows (PowerShell)
+$env:ANTHROPIC_API_KEY = "sk-ant-api..."</pre>
 
-      <p>Verify the installation:</p>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">bash</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-        <pre>python -c <span class="str">"import anthropic; print(anthropic.__version__)"</span></pre>
-      </div>
-    </div>
-  </div>
+  <p>Create a file called <code>hello_claude.py</code> and paste the following:</p>
+  <pre>import anthropic
 
-  <h2 id="step3">Step 3 — Make your first API call</h2>
+# The SDK reads ANTHROPIC_API_KEY from the environment automatically
+client = anthropic.Anthropic()
 
-  <div class="step">
-    <div class="step-num">3</div>
-    <div class="step-body">
-      <p>Store your API key as an environment variable so it stays out of your source code:</p>
-
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">bash</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-        <pre><span class="cm"># macOS / Linux</span>
-export ANTHROPIC_API_KEY=<span class="str">"sk-ant-api..."</span>
-
-<span class="cm"># Windows (PowerShell)</span>
-$env:ANTHROPIC_API_KEY = <span class="str">"sk-ant-api..."</span></pre>
-      </div>
-
-      <p>Now create a file called <code>hello_claude.py</code> and paste the following:</p>
-
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">Python</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-        <pre><span class="kw">import</span> anthropic
-
-<span class="cm"># The SDK reads ANTHROPIC_API_KEY from the environment automatically</span>
-client = anthropic.<span class="fn">Anthropic</span>()
-
-message = client.messages.<span class="fn">create</span>(
-    model=<span class="str">"claude-sonnet-4-6"</span>,
-    max_tokens=<span class="num">1024</span>,
+message = client.messages.create(
+    model="claude-sonnet-4-6",
+    max_tokens=1024,
     messages=[
         {
-            <span class="str">"role"</span>: <span class="str">"user"</span>,
-            <span class="str">"content"</span>: <span class="str">"Explain what a REST API is in two sentences."</span>
+            "role": "user",
+            "content": "Explain what a REST API is in two sentences."
         }
     ]
 )
 
-<span class="fn">print</span>(message.content[<span class="num">0</span>].text)</pre>
-      </div>
+print(message.content[0].text)</pre>
 
-      <p>Run the script:</p>
+  <p>Run the script:</p>
+  <pre>python hello_claude.py</pre>
 
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">bash</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-        <pre>python hello_claude.py</pre>
-      </div>
-    </div>
-  </div>
-
-  <h2 id="step4">Step 4 — Understand the response</h2>
-
+  <h2>Step 4 — Understand the Response</h2>
   <p>A successful call returns a <code>Message</code> object. Here is what the full JSON response looks like:</p>
-
-  <div class="code-block">
-    <div class="code-header">
-      <span class="code-lang">JSON — Response body</span>
-      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-    </div>
-    <pre>{
-  <span class="key">"id"</span>:         <span class="str">"msg_01XFDUDYJgAACzvnptvVoYEL"</span>,
-  <span class="key">"type"</span>:       <span class="str">"message"</span>,
-  <span class="key">"role"</span>:       <span class="str">"assistant"</span>,
-  <span class="key">"model"</span>:      <span class="str">"claude-sonnet-4-6"</span>,
-  <span class="key">"content"</span>: [
+  <pre>{
+  "id":         "msg_01XFDUDYJgAACzvnptvVoYEL",
+  "type":       "message",
+  "role":       "assistant",
+  "model":      "claude-sonnet-4-6",
+  "content": [
     {
-      <span class="key">"type"</span>: <span class="str">"text"</span>,
-      <span class="key">"text"</span>: <span class="str">"A REST API is a set of rules that allows applications to communicate over HTTP using standard methods like GET, POST, PUT, and DELETE. It treats server-side resources as URLs, making it easy for any HTTP-capable client to request or modify data."</span>
+      "type": "text",
+      "text": "A REST API is a set of rules that allows applications to communicate
+               over HTTP using standard methods like GET, POST, PUT, and DELETE."
     }
   ],
-  <span class="key">"stop_reason"</span>:  <span class="str">"end_turn"</span>,
-  <span class="key">"usage"</span>: {
-    <span class="key">"input_tokens"</span>:  <span class="num">17</span>,
-    <span class="key">"output_tokens"</span>: <span class="num">54</span>
+  "stop_reason":  "end_turn",
+  "usage": {
+    "input_tokens":  17,
+    "output_tokens": 54
   }
 }</pre>
-  </div>
 
   <table>
     <thead>
@@ -526,24 +267,21 @@ message = client.messages.<span class="fn">create</span>(
     </tbody>
   </table>
 
-  <h2 id="step5">Step 5 — Secure your API key</h2>
+  <h2>Step 5 — Secure Your API Key</h2>
+  <p>Environment variables work for local development, but production workloads need tighter controls.</p>
 
-  <p>Environment variables work for local development, but production workloads need tighter controls. Follow these practices:</p>
-
-  <div class="callout tip">
-    <div class="callout-label">Best practices</div>
+  <div class="tip">
+    <p class="label">Best Practices</p>
     <ul>
       <li>Store keys in a secrets manager (AWS Secrets Manager, HashiCorp Vault, or similar) — never in application code or config files.</li>
       <li>Use one key per environment (<code>dev</code>, <code>staging</code>, <code>prod</code>) so you can revoke them independently.</li>
-      <li>Set up key rotation on a schedule — rotate quarterly at minimum.</li>
-      <li>Monitor Console usage dashboards; unexpected spikes can signal a leaked key.</li>
+      <li>Rotate keys on a schedule — quarterly at minimum.</li>
+      <li>Monitor Console usage dashboards; unexpected spikes can indicate a leaked key.</li>
     </ul>
   </div>
 
-  <h2 id="parameters">Key request parameters</h2>
-
+  <h2>Key Request Parameters</h2>
   <p>The <code>messages.create</code> call accepts several parameters that shape Claude's behavior:</p>
-
   <table>
     <thead>
       <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
@@ -553,40 +291,33 @@ message = client.messages.<span class="fn">create</span>(
       <tr><td><code>messages</code></td><td>array</td><td>Yes</td><td>Ordered list of <code>role</code>/<code>content</code> pairs representing the conversation.</td></tr>
       <tr><td><code>max_tokens</code></td><td>integer</td><td>Yes</td><td>Maximum number of tokens Claude can generate in this response.</td></tr>
       <tr><td><code>system</code></td><td>string</td><td>No</td><td>System prompt. Sets Claude's persona, tone, or task constraints before the conversation starts.</td></tr>
-      <tr><td><code>temperature</code></td><td>float</td><td>No</td><td>Controls output randomness. Range: 0–1. Lower values produce more deterministic replies; higher values produce more varied output. Default: 1.</td></tr>
-      <tr><td><code>stream</code></td><td>boolean</td><td>No</td><td>When <code>true</code>, response tokens are sent incrementally using server-sent events instead of waiting for the full reply.</td></tr>
+      <tr><td><code>temperature</code></td><td>float</td><td>No</td><td>Controls output randomness. Range: 0–1. Lower values produce more deterministic replies. Default: 1.</td></tr>
+      <tr><td><code>stream</code></td><td>boolean</td><td>No</td><td>When <code>true</code>, response tokens are sent incrementally using server-sent events.</td></tr>
     </tbody>
   </table>
 
-  <h2 id="errors">Error handling</h2>
+  <h2>Error Handling</h2>
   <p>The Claude API uses standard HTTP status codes. Here are the most common errors and how to handle them:</p>
+  <pre>import anthropic
 
-  <div class="code-block">
-    <div class="code-header">
-      <span class="code-lang">Python</span>
-      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-    </div>
-    <pre><span class="kw">import</span> anthropic
+client = anthropic.Anthropic()
 
-client = anthropic.<span class="fn">Anthropic</span>()
-
-<span class="kw">try</span>:
-    message = client.messages.<span class="fn">create</span>(
-        model=<span class="str">"claude-sonnet-4-6"</span>,
-        max_tokens=<span class="num">1024</span>,
-        messages=[{<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: <span class="str">"Hello!"</span>}]
+try:
+    message = client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=1024,
+        messages=[{"role": "user", "content": "Hello!"}]
     )
-    <span class="fn">print</span>(message.content[<span class="num">0</span>].text)
+    print(message.content[0].text)
 
-<span class="kw">except</span> anthropic.AuthenticationError:
-    <span class="fn">print</span>(<span class="str">"Invalid API key. Check ANTHROPIC_API_KEY."</span>)
+except anthropic.AuthenticationError:
+    print("Invalid API key. Check ANTHROPIC_API_KEY.")
 
-<span class="kw">except</span> anthropic.RateLimitError:
-    <span class="fn">print</span>(<span class="str">"Rate limit hit. Implement exponential backoff and retry."</span>)
+except anthropic.RateLimitError:
+    print("Rate limit hit. Implement exponential backoff and retry.")
 
-<span class="kw">except</span> anthropic.APIStatusError <span class="kw">as</span> e:
-    <span class="fn">print</span>(<span class="fn">f</span><span class="str">"API error {e.status_code}: {e.message}"</span>)</pre>
-  </div>
+except anthropic.APIStatusError as e:
+    print(f"API error {e.status_code}: {e.message}")</pre>
 
   <table>
     <thead>
@@ -600,60 +331,26 @@ client = anthropic.<span class="fn">Anthropic</span>()
     </tbody>
   </table>
 
-  <h2 id="next">Next steps</h2>
+  <h2>Next Steps</h2>
   <p>Now that you've made your first API call, here are some natural directions to explore:</p>
+  <ul>
+    <li><strong>Multi-turn conversations</strong> — Append assistant replies to the messages array to build stateful chat experiences.</li>
+    <li><strong>System prompts</strong> — Use the <code>system</code> parameter to set Claude's persona, task, or response format.</li>
+    <li><strong>Streaming</strong> — Set <code>stream=True</code> to display tokens as they arrive, ideal for chat UIs.</li>
+    <li><strong>Tool use</strong> — Define tools (functions) that Claude can call to take real-world actions.</li>
+  </ul>
 
-  <div class="next-grid">
-    <div class="next-card">
-      <div class="next-card-icon">💬</div>
-      <h4>Multi-turn conversations</h4>
-      <p>Append assistant replies to the messages array to build stateful chat experiences.</p>
-    </div>
-    <div class="next-card">
-      <div class="next-card-icon">🎭</div>
-      <h4>System prompts</h4>
-      <p>Use the <code>system</code> parameter to set Claude's persona, task, or response format.</p>
-    </div>
-    <div class="next-card">
-      <div class="next-card-icon">⚡</div>
-      <h4>Streaming</h4>
-      <p>Set <code>stream=True</code> to display tokens as they arrive — ideal for chat UIs.</p>
-    </div>
-    <div class="next-card">
-      <div class="next-card-icon">🛠️</div>
-      <h4>Tool use</h4>
-      <p>Define tools (functions) that Claude can call to take real-world actions.</p>
-    </div>
-  </div>
-
-  <div class="callout info">
-    <div class="callout-label">Official resources</div>
+  <div class="info">
+    <p class="label">Official Resources</p>
     <ul>
       <li><a href="https://platform.claude.com/docs/en/api/overview" target="_blank">Claude API Reference</a></li>
-      <li><a href="https://platform.claude.com/docs/en/manage-claude/authentication" target="_blank">Authentication guide</a></li>
+      <li><a href="https://platform.claude.com/docs/en/manage-claude/authentication" target="_blank">Authentication Guide</a></li>
       <li><a href="https://console.anthropic.com" target="_blank">Anthropic Console</a></li>
     </ul>
   </div>
 
-  <div class="author-footer">
-    <div class="author-avatar">AG</div>
-    <div>
-      <div class="author-name">Amrutha Gatty</div>
-      <div class="author-bio">Senior Technical Writer · API & Developer Documentation · 9+ years experience</div>
-    </div>
-  </div>
-
-</main>
-
-<script>
-  function copyCode(btn) {
-    const pre = btn.closest('.code-block').querySelector('pre');
-    navigator.clipboard.writeText(pre.innerText).then(() => {
-      btn.textContent = 'Copied!';
-      setTimeout(() => btn.textContent = 'Copy', 2000);
-    });
-  }
-</script>
+  <hr />
+  <p class="meta">Written by Amrutha Gatty &nbsp;·&nbsp; Senior Technical Writer &nbsp;·&nbsp; API &amp; Developer Documentation &nbsp;·&nbsp; 9+ years experience</p>
 
 </body>
 </html>
